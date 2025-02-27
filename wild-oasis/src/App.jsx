@@ -11,6 +11,7 @@ import Settings from "./pages/Settings";
 import Account from "./pages/Account";
 import Login from "./pages/Login";
 import PageNotFound from "./pages/PageNotFound";
+import AppLayout from "./ui/AppLayout";
 // import AppLayout from "./ui/AppLayout";
 function App () {
   return (
@@ -19,6 +20,8 @@ function App () {
 <GlobalStyles/>
 <BrowserRouter>
 <Routes>
+
+  <Route element={<AppLayout/>}>
 
 <Route index element= {<Navigate replace to="dashboard"/>
 
@@ -43,6 +46,10 @@ function App () {
 <Route path="account"  element= {<Account/>
 
 }/>
+
+</Route>
+
+
 <Route path="login"  element= {<Login/>
 
 }/>
