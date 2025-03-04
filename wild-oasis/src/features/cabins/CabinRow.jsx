@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { formatCurrency } from "../../utils/helpers";
+import { useState } from "react";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -48,6 +49,8 @@ const Discount = styled.div`
 
 function CabinRow({ cabin }) {
 
+  const [showFor, setShowFor] = useState(false);
+
   const {id:cabinID,name,maxCapacity,regularPrice,discount,image}= cabin;
  
   const queryClient = useQueryClient();
@@ -79,8 +82,17 @@ function CabinRow({ cabin }) {
       <div>Fits up to{maxCapacity}guests</div>
       <Price>{formatCurrency(regularPrice)}</Price>
       <Discount>{formatCurrency(discount)}</Discount>
-      <button onClick={()=> mutate(cabinID)} disabled={isDeleting}>Delete</button>
 
+      <div>
+
+        <button>Edit</button>
+      <button onClick={()=> mutate(cabinID)} disabled={isDeleting}>Delete</button>
+     
+      
+      
+      
+      
+      </div>
     </TableRow>
   )
 }
