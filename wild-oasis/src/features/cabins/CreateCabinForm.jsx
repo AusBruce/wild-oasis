@@ -1,17 +1,20 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "react-hot-toast";
-
+import { useForm } from "react-hook-form";
 import Input from "../../ui/Input";
 import Form from "../../ui/Form";
 import Button from "../../ui/Button";
 import FileInput from "../../ui/FileInput";
 import Textarea from "../../ui/Textarea";
 import FormRow from "../../ui/FormRow";
-
-import { useForm } from "react-hook-form";
-import { createEditCabin } from "../../services/apiCabins";
+import { useCreateCabin } from "./useCreateCabin";
+import { useEditCabin } from "./useEditCabin";
 
 function CreateCabinForm({cabinToEdit ={}}) {
+
+  const {isCreating,createCabin} = useCreateCabin();
+
+  const { editCabin, isEditing } = useEditCabin();
+
+  const isWorking = isCreating || isEditing;
 
   const { id:editId,...editValues } = cabinToEdit;
   
@@ -22,39 +25,24 @@ function CreateCabinForm({cabinToEdit ={}}) {
   );
   const { errors } = formState;
 
-  const queryClient = useQueryClient();
 
-  const { mutate:createCabin, isLoading: isCreating } = useMutation({
-    mutationFn: createEditCabin,
-    onSuccess: () => {
-      toast.success("New cabin successfully created");
-      queryClient.invalidateQueries({ queryKey: ["cabins"] });
-      reset();
-    },
-    onError: (err) => toast.error(err.message),
-  });
-
-
-  const { mutate: editCabin, isLoading: isEditing } = useMutation({
-    mutationFn: ({newCabinData,id})=>createEditCabin(newCabinData,id),
-    onSuccess: () => {
-      toast.success(" cabin successfully edited");
-      queryClient.invalidateQueries({ queryKey: ["cabins"] });
-      reset();
-    },
-    onError: (err) => toast.error(err.message),
-  });
-
-  const isWorking = isCreating || isEditing;
+ 
 
   function onSubmit(data) {
 
     const image = typeof data.image === "string" ? data.image : data.image?.[0]||"";
 
     if(isEditSession) editCabin(
-      {newCabinData:{ ...data, image },id:editId}
+      {newCabinData:{ ...data, image },id:editId},{
+        onSuccess: (data) => {
+          console.log(data);
+          reset()},}
     );
-    else createCabin({ ...data, image: image });
+    else createCabin({ ...data, image: image },{
+      onSuccess: (data) => {
+        console.log(data);
+        reset()},
+    });
    
 
 
